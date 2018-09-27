@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link type="text/css" rel="stylesheet" href="css/materialize.css"  media="screen,projection"/>
+</head>
+<body>
+    <div class="row">
+      <div class="col s12">
+        <div class="row">
+          <div class="input-field col s12">
+            <input type="text" id="autocomplete-input" class="autocomplete">
+            <label for="autocomplete-input">Autocomplete</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/materialize.js"></script>
+    <script>
+
+      // API KEY 5daa3f4283d34009b160fd38b9d8d8ad
+
+      $(document).ready(function(){
+        var url = "https://api.nytimes.com/svc/books/v3/lists/best-sellers/history.json";
+        url += '?' + $.param({
+          'api-key': "5daa3f4283d34009b160fd38b9d8d8ad"
+        });
+
+        $.ajax({
+          url: url,
+          method: 'GET',
+          
+        }).done(function(response) {
+          console.log(response.results);
+          var books = response.results;
+          
+          var bookShelf = [];
+          
+          books.forEach((book, index) => {
+            bookShelf[book.title] = {
+              author: book.author,
+              description: book.description
+            };
+          });
+          console.log(bookShelf);
+
+          $('input.autocomplete').autocomplete({
+            data: bookShelf,
+            limit: 5,
+            minLength: 3,
+            onAutocomplete: function(elem) {
+              console.log('complete', elem);
+            }
+          });
+        }).fail(function(err) {
+          throw err;
+        });
+        
+        var input = $('#autocomplete-input');
+
+
+      });
+    
+    </script>
+</body>
+</html>
